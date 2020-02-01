@@ -16,6 +16,7 @@ var keys = Object.keys(client_list);
 server.listen(PORT, HOST);
 server.on('connection', function(sock) {
     // We have a connection - a socket object is assigned to the connection automatically
+    //console.log(socket_owner);
     var firstTime = true;
     sock.write(`Enter the correct code: `);
     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);

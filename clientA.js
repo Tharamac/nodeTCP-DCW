@@ -7,6 +7,7 @@ const readline = rl.createInterface({
 
 var HOST = '127.0.0.1';
 var PORT = 6969;
+var name = "A";
 var client = new net.Socket();
 client.connect(PORT, HOST, function() {
     isConnect = true;
