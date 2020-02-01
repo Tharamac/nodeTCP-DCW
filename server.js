@@ -16,13 +16,18 @@ var keys = Object.keys(client_list);
 server.listen(PORT, HOST);
 server.on('connection', function(sock) {
     // We have a connection - a socket object is assigned to the connection automatically
-    //console.log(socket_owner);
+    var socket_owner = "";
     var firstTime = true;
-    sock.write(`Enter the correct code: `);
     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
     // Add a 'data' event handler to this instance of socket
     sock.on('data', function(data){
         var str = data.toString();
+        if(socket_owner == ""){
+            socket_owner = str;
+            console.log(socket_owner);
+            sock.write(`Enter the correct code: `);
+            return
+        }
         console.log('DATA ' + sock.remoteAddress + ':'+ sock.remotePort + data );
         if(firstTime){ 
             let grammar = str.search("I am") == 0 ? true : false || str.search("I'm") == 0 ? true : false;
@@ -32,7 +37,10 @@ server.on('connection', function(sock) {
                 if(name == ""){
                     sock.write('Are you crazy?')
                     sock.destroy();
-                }else{
+                }else if(name != socket_owner){
+                    sock.write(`You are not ${socket_owner}. Are you crazy?\n`)
+                    sock.destroy();
+                }else {
                     sock.write(`Welcome! ${name} Score = ${client_list[name]}\nEnter command: `);
                     firstTime = false;
                 }
@@ -57,10 +65,9 @@ server.on('connection', function(sock) {
     // Add a 'close' event handler to this instance of socket
     sock.on('close', function(data) {
         console.log('CLOSED: ' + sock.remoteAddress +':'+ sock.remotePort);
-        process.exit();
+        
     });
     sock.on('error', function(data) {
         console.log('TERMINATED: ' + sock.remoteAddress +':'+ sock.remotePort);
-        process.exit();
     });
 });

@@ -12,6 +12,7 @@ var client = new net.Socket();
 client.connect(PORT, HOST, function() {
     isConnect = true;
     console.log('CONNECTED TO: ' + HOST + ':' + PORT);
+    client.write(name);
     // Write a message to the socket as soon as the client is connected,
     //the server will receive it as message from the client 
 });
