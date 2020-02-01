@@ -56,11 +56,9 @@ server.on('connection', function(sock) {
 
     // Add a 'close' event handler to this instance of socket
     sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +':'+ sock.remotePort);
-        process.exit();
+        console.log('CLOSED: ' + sock.remoteAddress +':'+ sock.remotePort); 
     });
     sock.on('error', function(data) {
         console.log('TERMINATED: ' + sock.remoteAddress +':'+ sock.remotePort);
-        process.exit();
     });
 });
