@@ -5,7 +5,10 @@ var server = net.createServer();
 var name;
 var client_list = {
      "A": 5,
-     "B": 2
+     "B": 2,
+     "C": 18,
+     "D": 11,
+     "E": 63
 };
 var keys = Object.keys(client_list);
 //console.log(keys)
@@ -19,7 +22,7 @@ server.on('connection', function(sock) {
     // Add a 'data' event handler to this instance of socket
     sock.on('data', function(data){
         var str = data.toString();
-        console.log('DATA ' + sock.remoteAddress + ': ' + data + ';' + typeof(data));
+        console.log('DATA ' + sock.remoteAddress + ':'+ sock.remotePort + data );
         if(firstTime){ 
             let grammar = str.search("I am") == 0 ? true : false || str.search("I'm") == 0 ? true : false;
             if(grammar){
@@ -40,12 +43,11 @@ server.on('connection', function(sock) {
             sock.destroy()
         }else if(!isNaN(parseInt(str))){
            // console.log(client_list[name])
-            client_list[name] = client_list[name] +  parseInt(str);   
-                 
-            sock.write(`Your score is ${client_list[name]}\nEnter command: `);
+        
+            sock.write(`Your score is ${client_list[name]+=  parseInt(str)}\nEnter command: `);
             //sock.write(`Enter command: `);
         }else{
-            sock.write(`Invalid Command. You must any number or 'BYE' to disconnect.\nEnter command:`);
+            sock.write(`Invalid Command. You must enter any number or 'BYE' to disconnect.\nEnter command:`);
         }
         // Write the data back to the socket, the client will receive it as data from the server
       //  sock.write('You said "' + data + '"');
@@ -53,9 +55,11 @@ server.on('connection', function(sock) {
 
     // Add a 'close' event handler to this instance of socket
     sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+        console.log('CLOSED: ' + sock.remoteAddress +':'+ sock.remotePort);
+        process.exit();
     });
     sock.on('error', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+        console.log('TERMINATED: ' + sock.remoteAddress +':'+ sock.remotePort);
+        process.exit();
     });
 });

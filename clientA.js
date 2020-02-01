@@ -1,5 +1,6 @@
 var net = require('net');
-const readline = require('readline').createInterface({
+var rl = require('readline');
+const readline = rl.createInterface({
     input: process.stdin,
     output: process.stdout
 })
@@ -18,11 +19,12 @@ client.connect(PORT, HOST, function() {
 // data is what the server sent to this socket
 client.on('data', function(data) {
     if(data.toString() == "Are you crazy?"){
-        client.destroy();
+        console.log(data.toString())
     }else{
-        readline.question(data, (name) => {
-            client.write(name);
-           //
+        readline.resume();
+        readline.question(data, cmd => {
+            client.write(cmd);
+            readline.pause();
         })
     }
 });
@@ -30,14 +32,13 @@ client.on('data', function(data) {
 // Add a 'close' event handler for the client socket
 client.on('close', function() {
     console.log('Connection closed');
+    rl.clearScreenDown(process.stdout);
     readline.close();
+    process.exit();
 });
 client.on('error', function() {
-    console.log('Connection Terminated');
+    console.log('Error');
     readline.close();
-    
+    process.exit();
 });
 
-readline.on('close', ()=>{
-    client.destroy();
-})
